@@ -1,10 +1,9 @@
 var lines=[];
 var linesAsString;
 var replStr; //orig string with @ replacing end of lines
-var dispStr; //replaced string to display
+var dispStr = []; //replaced string to display
 var fntSze=20;
 var lexicon;
-var time1,time2,time3,time4;
 
 function preload(){
   //loadStrings returns an array of Strings from our text file
@@ -13,39 +12,36 @@ function preload(){
 }
 
 function setup() {
-	createCanvas(800,700); 
+	createCanvas(775,2*(lines.length)*fntSze*1.5); 
 	background(0);
 	frameRate(20);
 	
-	time1=2000;
-	time2=4000;
-	time3=6000;
-	time4=8000;
-	
 	textSize(fntSze);
 	textFont("Monaco"); 
+	textStyle(BOLD);
 	
 	lexicon = new RiLexicon();
 	linesAsString=lines.join('\n');
 	//mark end of lines because tokenize its them, so replacing to  spec character @ 
 	replStr=linesAsString.replace(/\n/g,' @ ');
-	dispStr=randAdjAndNouns(replStr,150);
+	
+	for(var i=0; i<10; i++){
+		dispStr[i]=randAdjAndNouns(replStr,150);
+	}
 }
 
 function draw() {
 	var timer=millis();
+  var index=int(timer / 10000 % 10);
+  
   background(0);
- 	fill(255);
+  
+ 	fill(150);
+  text(linesAsString,40,40);
  	
-  text(linesAsString,20,20);
- 	if (timer>=time1 && timer<time2){
-  	text(dispStr, 0, (lines.length+1)*fntSze*1.5);
-  	//fill(255);
- 	}else if (timer>=time2 && timer<time3){
-  	text(randAdjAndNouns(dispStr,150), 0, (lines.length+1)*fntSze*1.5);
-  	//fill(255);
- 	}
-}
+ 	fill(255);
+  text(dispStr[index], 80, (lines.length+1)*fntSze*1.5);
+  }
 
 function randAdjAndNouns(sourceStr,txtColor)
 {
@@ -57,25 +53,21 @@ function randAdjAndNouns(sourceStr,txtColor)
 	{
 	  spPart=RiTa.getPosTags(words[j]);
 	  if(spPart=="nn"){
-	  	fill(txtColor);
 	  	words[j]=lexicon.randomWord("nn");
 	  }
 	  else if(spPart=="jj"){
-	  	fill(txtColor);
 	  	words[j]=lexicon.randomWord("jj");
-	  }else{
-	  	fill(255);
-	  	
 	  }
 	}
+	
 	result=words.join(" ");
 	//restoring end of lines
 	result=result.replace(/ @ /g,'\n');
+	result=result.replace(/\s\./g,'.'); 
+	result=result.replace(/\s\,/g,',');
+	result=result.replace(/\s\;/g,';'); 
   return result;
-  //put text in here
 }
 
-/*function mouseClicked(){
-  dispStr=randAdjAndNouns(replStr);
-}*/
+
 
