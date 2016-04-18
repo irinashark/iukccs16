@@ -51,7 +51,7 @@ function setup() {
 
 function draw() {
 	timer = millis();
-	background(0,20);
+	background(0,30);
 	/*if (millis()<30000)
   	background(0,20);
 	else 
